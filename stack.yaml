@@ -1,0 +1,26 @@
+packages:
+- '.'
+- location:
+    git: https://github.com/ghcjs/ghcjs-base.git
+    commit: 8ee08129ea0e86bc2d60276479c0a552c5189fcb # need a few package bumps not present in hackage release yet
+  extra-dep: true
+- location:
+    hg: https://bitbucket.org/wuzzeb/react-flux
+    commit: 626798d2b617 # need a few package bumps not present in hackage release yet
+  extra-dep: true
+
+
+resolver: lts-3.10
+
+compiler: ghcjs-0.2.0.20151001_ghc-7.10.2
+compiler-check: match-exact
+setup-info:
+  ghcjs:
+    source:
+      ghcjs-0.2.0.20151001_ghc-7.10.2:
+        url: "https://github.com/fizruk/ghcjs/releases/download/v0.2.0.20151001/ghcjs-0.2.0.20151001.tar.gz"
+
+extra-deps:
+  - ref-tf-0.4
+  - these-0.6.1.0
+  - ghcjs-dom-0.2.2.0 # improved-base compatible with (2015-10-01 ghcjs)
