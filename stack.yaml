@@ -1,10 +1,6 @@
 packages:
 - '.'
 - location:
-    git: https://github.com/ghcjs/ghcjs-base.git
-    commit: 8ee08129ea0e86bc2d60276479c0a552c5189fcb # need a few package bumps not present in hackage release yet
-  extra-dep: true
-- location:
     hg: https://bitbucket.org/wuzzeb/react-flux
     commit: 626798d2b617 # need a few package bumps not present in hackage release yet
   extra-dep: true

@@ -4,6 +4,7 @@ module TodoViews where
 
 import Control.Monad (when)
 import React.Flux
+import React.Flux.Lifecycle
 
 import TodoDispatcher
 import TodoStore
@@ -11,12 +12,37 @@ import TodoComponents
 
 -- | The controller view and also the top level of the TODO app.  This controller view registers
 -- with the store and will be re-rendered whenever the store changes.
-todoApp :: ReactView ()
+{-todoApp :: ReactView ()
 todoApp = defineControllerView "todo app" todoStore $ \todoState () ->
     div_ $ do
         todoHeader_
         mainSection_ todoState
         todoFooter_ todoState
+--}
+
+todoApp :: ReactView ()
+todoApp = defineLifecycleView "todo app" (TodoState
+    [ (0, Todo "Learn react" True False)
+    , (1, Todo "Learn react-flux" False False)
+    ]) lifecycleConfig
+    { lRender = render
+    }
+    where
+      render :: TodoState -> () -> ReactElementM (StatefulViewEventHandler TodoState) ()
+      render (TodoState xs) () =  div_ $ do
+                        h1_ $ "hello world" 
+                        ul_ [ "id" $= "todo-list" ] $ mapM_ todoItem_ $ xs
+                        button_ [ "id" $= "add-app-str"
+                                , onClick $ \_ _ (TodoState xs) -> ([], Just $ TodoState (xs ++ [(2,Todo "lgglgl" False False)]))
+                                ]
+                                "Add o"
+                        button_ [ "id" $= "clear-app-str"
+                                , onClick $ \_ _ s' -> ([], Just $ TodoState [])
+                                ] "Clear"
+                        
+
+
+
 
 -- | The TODO header as a React view with no properties.
 todoHeader :: ReactView ()
@@ -57,28 +83,7 @@ todoItem :: ReactView (Int, Todo)
 todoItem = defineView "todo item" $ \(todoIdx, todo) ->
     li_ [ classNames [("completed", todoComplete todo), ("editing", todoIsEditing todo)]
         , "key" @= todoIdx
-        ] $ do
-        
-        cldiv_ "view" $ do
-            input_ [ "className" $= "toggle"
-                   , "type" $= "checkbox"
-                   , "checked" @= todoComplete todo
-                   , onChange $ \_ -> dispatchTodo $ TodoSetComplete todoIdx $ not $ todoComplete todo
-                   ]
-
-            label_ [ onDoubleClick $ \_ _ -> dispatchTodo $ TodoEdit todoIdx] $
-                elemText $ todoText todo
-
-            clbutton_ "destroy" (dispatchTodo $ TodoDelete todoIdx) mempty
-
-        when (todoIsEditing todo) $
-            todoTextInput_ TextInputArgs
-                { tiaId = Nothing
-                , tiaClass = "edit"
-                , tiaPlaceholder = ""
-                , tiaOnSave = dispatchTodo . UpdateText todoIdx
-                , tiaValue = Just $ todoText todo
-                }
+        ] $ do elemText $ todoText todo
 
 -- | A combinator for a todo item to use inside rendering functions
 todoItem_ :: (Int, Todo) -> ReactElementM eventHandler ()
